@@ -1,7 +1,20 @@
-package main.java.com.fantasypop.service;
+package com.fantasypop.service;
 
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
+@Service
 public class UserService {
 
-    private int ID;
+    private List<User> userList;
+
+    public UserService(){
+        userList = new ArrayList<>();
+
+        User user1 = new User(id:1, firstname: "Chris", lastname: "Santos", email: "jimmyjobjob@yahoo.com", password: "large546#", birthday: "", profilePic: "", socialMediaLinks: "" )
+    }
+    public User getUser(Integer id) {
+        return
+    }
 }
