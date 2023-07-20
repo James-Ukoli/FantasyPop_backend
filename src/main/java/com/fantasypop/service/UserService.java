@@ -14,7 +14,14 @@ public class UserService {
 
         User user1 = new User(id:1, firstname: "Chris", lastname: "Santos", email: "jimmyjobjob@yahoo.com", password: "large546#", birthday: "", profilePic: "", socialMediaLinks: "" )
     }
-    public User getUser(Integer id) {
-        return
+    public Optional<User> getUser(Integer id) {
+        Optional optional = Optional.empty();
+        for (User user: userList) {
+            if(id == user.getID()){
+                optional = Optional.of(user)
+                return optional;
+            }
+        }
+        return optional
     }
 }

@@ -1,20 +1,42 @@
 package com.fantasypop.api.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.Map;
 
+@Entity
+@Table(name = "posts")
 public class Post {
     //Fields
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false, unique = true, name = "username")
     private String username; // can be anonymous
+
+    @Column(nullable = false, name = "content")
     private String content;
+
+    @Column(name = "vote_ratio") // Positive to Negative Ratio for post
     private int voteRatio;
+    @Column(name ="total_Votes")
     private int totalVotes;
+    @Column(nullable = false, name = "timestamp")
     private LocalDateTime timestamp;
+
+    @Column(name="key_players")
     private Map<String, String> keyPlayers;
+
+    @Column(nullable = false, name="sport")
     private String sport;
+
+    @Column(name="flag_count")
     private int flagCount;
+    @Column(nullable = false, name="topic")
     private String topic;
+
+    @Column(nullable = false, name = "comments")
     private String comments;
 
     //Constructor

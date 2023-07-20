@@ -1,21 +1,34 @@
 package main.java.com.fantasypop.api.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.Map;
 
+@Entity
+@Table(name = "users")
 public class User {
     // Fields
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column (nullable = false, name="first_name")
     private String firstname;
+    @Column (nullable = false, name="last_name")
     private String lastname;
-
+@Column (nullable = false, name="email", unique = true)
     private String email;
+@Column (nullable = false, name = "username", unique = true)
     private String username;
+@Column(nullable = false, name="password")
     private String password;
+@Column(nullable = false, name = "birthday")
     private LocalDate birthday;
+@Column(name = "profilePic_url")
     private String profilePic;
     //SocialMedia Links will be **NOT BE REQUIRED** for users
+    @Column(name = "social_media")
     private Map<String, String> socialMediaLinks;
 
 //Constructor
