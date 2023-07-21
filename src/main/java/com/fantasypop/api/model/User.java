@@ -2,8 +2,6 @@ package com.fantasypop.api.model;
 
 import jakarta.persistence.*;
 import org.springframework.stereotype.Repository;
-
-import java.time.LocalDate;
 import java.util.Map;
 
 @Entity
@@ -32,7 +30,8 @@ public class User {
     @Column(name = "social_media")
     private Map<String, String> socialMediaLinks;
 
-//Constructor
+
+    //Constructor
     public User(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Map<String, String> socialMediaLinks) {
         this.id = id;
         this.firstname = firstname;

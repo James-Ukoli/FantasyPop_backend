@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 @Service
@@ -21,7 +22,10 @@ public class UserService {
         users.add(new User(3L, "Bob", "Johnson", "bob@example.com", "Bob123", "bob321", "2001-12-12", null, null));
         users.add(new User(4L, "Alice", "Green", "alice@example.com", "Alice123", "alice321", "1984-02-27", null, null));
     }
-
+    // LIST METHOD
+    public List<User> getUsers() {
+        return users;
+    }
     // READ METHODS (id, username, email) *ONLY UNIQUE FIELDS*
     public User getUserById(Long userId) {
         return users.stream()
@@ -44,40 +48,34 @@ public class UserService {
                 .orElse(null);
     }
 
-    public List<User> getActiveUsers() {
-        return users.stream()
-                .filter(User::isActive)
-                .toList();
-    }
-
-    // LIST METHOD
-    public List<User> getUsers() {
-        return users;
-    }
-
     /// CREATE METHOD
-    public User createUser(String username, String email, boolean isActive) {
-        Long newUserId = users.stream().mapToLong(User::getUserId).max().orElse(0) + 1;
-        User newUser = new User(newUserId, username, email, isActive);
+    public User createUser(String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Map<String, String> socialMediaLinks) {
+        Long newUserId = users.stream().mapToLong(User::getID).max().orElse(0) + 1; // add id to user
+        User newUser = new User(newUserId, firstname, lastname, email, username, password, dob, profilePic, socialMediaLinks );
         users.add(newUser);
         return newUser;
     }
 
     // UPDATE METHOD
-    public User updateUser(Long userId, String username, String email, boolean isActive) {
-        User userToUpdate = getUserById(userId);
+    public User registerUser(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Map<String, String> socialMediaLinks) {
+        User userToUpdate = getUserById(id);
         if (userToUpdate != null) {
-            userToUpdate.setUsername(username);
+            userToUpdate.setFirstname(firstname);
+            userToUpdate.setLastname(lastname);
             userToUpdate.setEmail(email);
-            userToUpdate.setActive(isActive);
+            userToUpdate.setUsername(username);
+            userToUpdate.setPassword(password);
+            userToUpdate.setDob(dob);
+            userToUpdate.setProfilePic(profilePic);
+            userToUpdate.setSocialMediaLinks(socialMediaLinks);
             return userToUpdate;
         }
         return null;
     }
 
     /// DELETE METHOD
-    public boolean deleteUser(Long userId) {
-        User userToDelete = getUserById(userId);
+    public boolean deleteUser(Long id) {
+        User userToDelete = getUserById(id);
         if (userToDelete != null) {
             users.remove(userToDelete);
             return true;
@@ -88,26 +86,26 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public void registerUser(UserDto userDto) {
-        String rawPassword = userDto.getPassword();
+    public void registerUser(User user) {
+        String rawPassword = user.getPassword();
         String hashedPassword = passwordEncoder.encode(rawPassword);
 
         User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
+        user.setUsername(user.getUsername());
+        user.setEmail(user.getEmail());
         user.setPassword(hashedPassword);
 
-        userRepository.save(user);
+        user.save(user);
     }
 
-    public boolean verifyUserLogin(UserLoginDto loginDto) {
-        User user = userRepository.findByUsername(loginDto.getUsername());
+    public boolean verifyUserLogin(User  user) {
+        User user = user.findByUsername(user.getUsername());
 
         if (user == null) {
             return false; // User not found
         }
 
-        String rawPassword = loginDto.getPassword();
+        String rawPassword = user.getPassword();
         String storedHashedPassword = user.getPassword();
 
         return passwordEncoder.matches(rawPassword, storedHashedPassword);

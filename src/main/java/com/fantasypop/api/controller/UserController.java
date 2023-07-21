@@ -4,6 +4,8 @@ import com.fantasypop.api.model.User;
 import com.fantasypop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -41,14 +43,14 @@ public class UserController {
     // PASSWORD TEMPLATE
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody UserDto userDto) {
-        userService.registerUser(userDto);
+    public ResponseEntity<String> registerUser(@RequestBody User user) {
+        userService.registerUser(user);
         return ResponseEntity.ok("User registered successfully.");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserLoginDto loginDto) {
-        boolean loginSuccess = userService.verifyUserLogin(loginDto);
+    public ResponseEntity<String> loginUser(@RequestBody User login) {
+        boolean loginSuccess = userService.verifyUserLogin(login);
         if (loginSuccess) {
             return ResponseEntity.ok("Login successful.");
         } else {
