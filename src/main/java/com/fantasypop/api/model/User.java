@@ -1,6 +1,7 @@
 package com.fantasypop.api.model;
 
 import jakarta.persistence.*;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class User {
 @Column(nullable = false, name="password") // Need to be private
     private String password;
 @Column(nullable = false, name = "date_of_birth")
-    private LocalDate dob;
+    private String dob;
 @Column(name = "profilePic_url")
     private String profilePic;
     //SocialMedia Links will be **NOT BE REQUIRED** for users
@@ -81,10 +82,10 @@ public class User {
     public void setPassword(String password){
         this.password = password;
     }
-    public LocalDate getBirthday(){
+    public String getDob(){
         return dob;
     }
-    public void setBirthday(LocalDate dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
     public String getProfilePic(){
@@ -99,5 +100,13 @@ public class User {
     public void setSocialMediaLinks(Map<String,String> socialMediaLinks) {
         this.socialMediaLinks = socialMediaLinks;
     }
+
+    //PASSWORD TEMPLATE
+//    @Repository
+//    public interface UserRepository extends JpaRepository<User, Long> {
+//        User findByUsername(String username);
+//        // Additional methods for other queries
+//    }
+
 
 }
