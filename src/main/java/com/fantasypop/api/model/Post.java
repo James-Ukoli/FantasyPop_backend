@@ -20,7 +20,7 @@ public class Post {
 
     @Column(name = "vote_ratio") // Positive to Negative Ratio for post
     private int voteRatio;
-    @Column(name ="total_Votes")
+    @Column(name ="total_votes")
     private int totalVotes;
     @Column(nullable = false, name = "timestamp")
     private LocalDateTime timestamp;
@@ -116,15 +116,7 @@ public class Post {
     public String getComments(){
         return comments;
     }
-    public void setComments(){
+    public void setComments(String comments){
         this.comments = comments;
     }
-
-
-
-
-
-
-
-
 }

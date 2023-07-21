@@ -1,29 +1,27 @@
 
 package com.fantasypop.api.controller;
+import com.fantasypop.api.model.User;
 import com.fantasypop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
+@RequestMapping(path = "api/vi/user")
 public class UserController {
 
-    private UserService userService;
-    @Autowired // Constructor injection
+    private final UserService userService;
+ // Constructor injection
+    @Autowired
     public UserController(UserService userService){
         this.userService = userService;
     }
 
-    @PostMapping // create
-    @GetMapping // list
-    @GetMapping /// read
-    public User getUser(@RequestParam Integer id){
-       Optional<User> = userService.getUser(id);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        return null;
+  
+    @GetMapping /// list
+ public List<User> getUsers(){
+        return userService.getUsers();
     }
-    @PutMapping // update
-    @DeleteMapping // delete
-
+ 
 }
