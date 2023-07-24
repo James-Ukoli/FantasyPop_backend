@@ -1,7 +1,7 @@
 
 package com.fantasypop.api.controller;
 import com.fantasypop.api.model.User;
-import com.fantasypop.service.UserService;
+import com.fantasypop.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +14,12 @@ import java.util.List;
 public class UserController {
 //    @Autowired (PASSWORD TEMPLATE)
 //    private User.UserRepository userRepository;
-    private final UserService userService;
+
+
  // Constructor injection
+
     @Autowired
-    public UserController(UserService userService){
-        this.userService = userService;
-    }
+ UserService userService;
 
   
     @GetMapping /// list
@@ -43,19 +43,28 @@ public class UserController {
     // PASSWORD TEMPLATE
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
-        userService.registerUser(user);
-        return ResponseEntity.ok("User registered successfully.");
+    public ResponseEntity<String> registerUser(@RequestBody User userDTO) {
+        // Validate the userDTO and other fields
+
+        // Hash the password before saving it
+        String hashedPassword = userService.hashPassword(userDTO.getPassword());
+        userDTO.setPassword(hashedPassword);
+
+        // Save the user with the hashed password
+        userService.registerUser(userDTO);
+        return ResponseEntity.ok("User registered successfully!");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User login) {
-        boolean loginSuccess = userService.verifyUserLogin(login);
+    public ResponseEntity<String> loginUser(@RequestBody User loginUser) {
+        boolean loginSuccess = userService.verifyUserLogin(loginUser);
         if (loginSuccess) {
             return ResponseEntity.ok("Login successful.");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
         }
     }
+
+
  
 }

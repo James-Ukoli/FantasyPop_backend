@@ -2,12 +2,23 @@ package com.fantasypop.api.model;
 
 import jakarta.persistence.*;
 import org.springframework.stereotype.Repository;
+
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
 
 @Entity
 @Table(name = "users") // Warning underlines will be removed once database is correctly connected
 public class User {
-    // Fields
+    // Default constructor
+    public User () {
+
+    }
+
+    ///Fields
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,11 +39,12 @@ public class User {
     private String profilePic;
     //SocialMedia Links will be **NOT BE REQUIRED** for users
     @Column(name = "social_media")
-    private Map<String, String> socialMediaLinks;
+    @ElementCollection
+    private Set<String> socialMediaLinks = new HashSet<>();
 
 
     //Constructor
-    public User(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Map<String, String> socialMediaLinks) {
+    public User(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -93,19 +105,19 @@ public class User {
     public void setProfilePic(String profilePic){
         this.profilePic = profilePic;
     }
-    public Map<String, String> getSocialMediaLinks(){
+    public Set<String> getSocialMediaLinks(){
         return socialMediaLinks;
     }
-    public void setSocialMediaLinks(Map<String,String> socialMediaLinks) {
+    public void setSocialMediaLinks(Set<String> socialMediaLinks) {
         this.socialMediaLinks = socialMediaLinks;
     }
 
     //PASSWORD TEMPLATE
-//    @Repository
-//    public interface UserRepository extends JpaRepository<User, Long> {
-//        User findByUsername(String username);
-//        // Additional methods for other queries
-//    }
+    @Repository
+    public interface UserRepository extends JpaRepository<User, Long> {
+        User findByUsername(String username);
+        // Additional methods for other queries
+    }
 
 
 }

@@ -1,16 +1,21 @@
-package com.fantasypop.service;
+package com.fantasypop.api.service;
 
 import com.fantasypop.api.model.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 @Service
 public class UserService {
-
 
     private List<User> users;
 
@@ -49,7 +54,7 @@ public class UserService {
     }
 
     /// CREATE METHOD
-    public User createUser(String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Map<String, String> socialMediaLinks) {
+    public User registerUser(String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
         Long newUserId = users.stream().mapToLong(User::getID).max().orElse(0) + 1; // add id to user
         User newUser = new User(newUserId, firstname, lastname, email, username, password, dob, profilePic, socialMediaLinks );
         users.add(newUser);
@@ -57,7 +62,7 @@ public class UserService {
     }
 
     // UPDATE METHOD
-    public User registerUser(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Map<String, String> socialMediaLinks) {
+    public User updateUser(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
         User userToUpdate = getUserById(id);
         if (userToUpdate != null) {
             userToUpdate.setFirstname(firstname);
@@ -84,30 +89,31 @@ public class UserService {
     }
     // PASSWORD HASHING TEMPLATE
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private User.UserRepository userRepository;
 
-    public void registerUser(User user) {
-        String rawPassword = user.getPassword();
-        String hashedPassword = passwordEncoder.encode(rawPassword);
+    // Use a strong hashing algorithm like bcrypt
+    private static final int HASHING_STRENGTH = 12;
 
-        User user = new User();
-        user.setUsername(user.getUsername());
-        user.setEmail(user.getEmail());
-        user.setPassword(hashedPassword);
-
-        user.save(user);
+    public String hashPassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(HASHING_STRENGTH);
+        return passwordEncoder.encode(password);
     }
 
-    public boolean verifyUserLogin(User  user) {
-        User user = user.findByUsername(user.getUsername());
+    public void registerUser(User userDTO) {
+        // UserDTO userDTO
+        // Additional business logic or validation if needed
+
+        // Save the user in the repository
+        userRepository.save(userDTO);
+    }
+    public boolean verifyUserLogin(String username, String rawPassword) {
+        User user = userRepository.findByUsername(username);
 
         if (user == null) {
             return false; // User not found
         }
 
-        String rawPassword = user.getPassword();
         String storedHashedPassword = user.getPassword();
-
         return passwordEncoder.matches(rawPassword, storedHashedPassword);
     }
 }
