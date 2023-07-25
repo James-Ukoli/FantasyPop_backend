@@ -31,8 +31,10 @@ public class User {
     private String email;
 @Column (nullable = false, name = "username", unique = true)
     private String username;
-@Column(nullable = false, name="password") // Need to be private
-    private String password;
+@Column(nullable = false, name="passwordHash") // Need to be private
+    private String passwordHash;
+    @Column(nullable = false, name="passwordSalt") // Need to be private
+    private String passwordSalt;
 @Column(nullable = false, name = "date_of_birth")
     private String dob;
 @Column(name = "profilePic_url")
@@ -44,13 +46,14 @@ public class User {
 
 
     //Constructor
-    public User(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
+    public User(Long id, String firstname, String lastname, String email, String username, String passwordHash, String passwordSalt, String dob, String profilePic, Set<String> socialMediaLinks) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.username = username;
-        this.password = password;
+        this.passwordHash = passwordHash;
+        this.passwordSalt = passwordSalt;
         this.dob = dob;
         this.profilePic = profilePic;
         this.socialMediaLinks = socialMediaLinks;
@@ -87,11 +90,19 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
-    public String getPassword(){
-        return password;
+    public String getPasswordHash(){
+        return passwordHash;
     }
-    public void setPassword(String password){
-        this.password = password;
+
+    public void setPasswordHash(String passwordHash){
+        this.passwordHash= passwordHash;
+    }
+    public String getPasswordSalt(){
+        return passwordSalt;
+    }
+
+    public void setPasswordSalt(String passwordSalt){
+        this.passwordSalt= passwordSalt;
     }
     public String getDob(){
         return dob;

@@ -16,16 +16,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UserService {
-
+private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private List<User> users;
 
     public UserService() {
         // Dummy data initialization (4 users)
         users = new ArrayList<>();
-        users.add(new User(1L, "John", "Doe", "john@example.com", "John123", "john321", "1990-08-15", null, null));
-        users.add(new User(2L, "Jane", "Smith", "jane@example.com", "Jane123", "jane321", "1992-03-24", null, null));
-        users.add(new User(3L, "Bob", "Johnson", "bob@example.com", "Bob123", "bob321", "2001-12-12", null, null));
-        users.add(new User(4L, "Alice", "Green", "alice@example.com", "Alice123", "alice321", "1984-02-27", null, null));
+        users.add(new User(1L, "John", "Doe", "john@example.com", "John123", "123john", "john321", "1990-08-15", null, null));
+        users.add(new User(2L, "Jane", "Smith", "jane@example.com", "Jane123", "123jane", "jane321", "1992-03-24", null, null));
+        users.add(new User(3L, "Bob", "Johnson", "bob@example.com", "Bob123", "123bob","bob321", "2001-12-12", null, null));
+        users.add(new User(4L, "Alice", "Green", "alice@example.com", "Alice123", "123alice", "alice321", "1984-02-27", null, null));
     }
     // LIST METHOD
     public List<User> getUsers() {
@@ -54,22 +54,24 @@ public class UserService {
     }
 
     /// CREATE METHOD
-    public User registerUser(String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
+    public User registerUser(String firstname, String lastname, String email, String username, String passwordHash, String passwordSalt, String dob, String profilePic, Set<String> socialMediaLinks) {
         Long newUserId = users.stream().mapToLong(User::getID).max().orElse(0) + 1; // add id to user
-        User newUser = new User(newUserId, firstname, lastname, email, username, password, dob, profilePic, socialMediaLinks );
+        User newUser = new User(newUserId, firstname, lastname, email, username, passwordHash, passwordSalt, dob, profilePic, socialMediaLinks );
         users.add(newUser);
         return newUser;
     }
 
+
     // UPDATE METHOD
-    public User updateUser(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
+    public User updateUser(Long id, String firstname, String lastname, String email, String username, String passwordHash, String passwordSalt, String dob, String profilePic, Set<String> socialMediaLinks) {
         User userToUpdate = getUserById(id);
         if (userToUpdate != null) {
             userToUpdate.setFirstname(firstname);
             userToUpdate.setLastname(lastname);
             userToUpdate.setEmail(email);
             userToUpdate.setUsername(username);
-            userToUpdate.setPassword(password);
+            userToUpdate.setPasswordHash(passwordHash);
+            userToUpdate.setPasswordSalt(passwordSalt);
             userToUpdate.setDob(dob);
             userToUpdate.setProfilePic(profilePic);
             userToUpdate.setSocialMediaLinks(socialMediaLinks);
@@ -113,7 +115,11 @@ public class UserService {
             return false; // User not found
         }
 
-        String storedHashedPassword = user.getPassword();
+        String storedHashedPassword = user.getPasswordHash();
         return passwordEncoder.matches(rawPassword, storedHashedPassword);
     }
+//    public boolean verifyPassword(User user, String passwordHash) {
+//        String hashedPassword = passwordEncoder.encode(passwordHash, user.getPasswordSalt());
+//        return hashedPassword.equals(user.getPasswordHash());
+//    }
 }
