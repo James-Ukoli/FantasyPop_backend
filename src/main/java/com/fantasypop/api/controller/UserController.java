@@ -3,34 +3,40 @@ package com.fantasypop.api.controller;
 import com.fantasypop.api.model.User;
 import com.fantasypop.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/vi/user")
+@RequestMapping(path = "api/users")
 public class UserController {
-//    @Autowired (PASSWORD TEMPLATE)
-//    private User.UserRepository userRepository;
+private List<User> users = new ArrayList<>();
 
+@Autowired
+private BCryptPasswordEncoder bCryptPasswordEncoder;
 
- // Constructor injection
-
-    @Autowired
- UserService userService;
+@Autowired
+UserService userService;
 
   
-    @GetMapping /// list
+@GetMapping /// list
  public List<User> getUsers(){
         return userService.getUsers();
     }
 
     @GetMapping /// read
-    public User getUserById(@RequestParam Long id){
-        return userService.getUserById(id);
+    public User getUserById(@PathVariable Long id){
+        User user = users.stream().filter(u -> u.getID().equals(id)).findFirst().orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
     }
+
 
     public User getUserByUsername(@RequestParam String username) {
         return userService.getUserByUsername(username);
@@ -43,16 +49,18 @@ public class UserController {
     // PASSWORD TEMPLATE
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User userDTO) {
-        // Validate the userDTO and other fields
+    public ResponseEntity<String> registerUser(@RequestBody User user) {
+        Long id = System.currentTimeMillis();
+        user.setID(id);
 
-        // Hash the password before saving it
-        String hashedPassword = userService.hashPassword(userDTO.getPassword());
-        userDTO.setPassword(hashedPassword);
+        // Hash the password using BCrypt before storing it
+        String hashedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
 
-        // Save the user with the hashed password
-        userService.registerUser(userDTO);
-        return ResponseEntity.ok("User registered successfully!");
+        // Save the user in the data store
+        users.add(user);
+
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/login")
@@ -64,6 +72,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
         }
     }
+
+
 
 
  
