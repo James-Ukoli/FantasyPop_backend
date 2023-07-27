@@ -1,6 +1,7 @@
 package com.fantasypop.api.model;
 
 import jakarta.persistence.*;
+import lombok.Data; // lombok
 import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
@@ -10,15 +11,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 @Entity
+@Data
 @Table(name = "users") // Warning underlines will be removed once database is correctly connected
-public class User {
+public class Users {
     // Default constructor
-    public User () {
+    public Users () {
 
     }
 
     ///Fields
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -44,7 +47,7 @@ public class User {
 
 
     //Constructor
-    public User(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
+    public Users(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -116,11 +119,7 @@ public class User {
     }
 
     //PASSWORD TEMPLATE
-    @Repository
-    public interface UserRepository extends JpaRepository<User, Long> {
-        User findByUsername(String username);
-        // Additional methods for other queries
-    }
+
 
 
 }

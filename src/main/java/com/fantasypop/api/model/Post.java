@@ -1,15 +1,18 @@
 package com.fantasypop.api.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.Set;
 
 @Entity
+@Data
 @Table(name = "posts")
 public class Post {
     //Fields
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false, unique = true, name = "username")
@@ -26,7 +29,7 @@ public class Post {
     private LocalDateTime timestamp;
 
     @Column(name="key_players")
-    private Map<String, String> keyPlayers;
+    private Set<String> keyPlayers;
 
     @Column(nullable = false, name="sport")
     private String sport;
@@ -39,8 +42,13 @@ public class Post {
     @Column(nullable = false, name = "comments")
     private String comments;
 
+    // default constructor
+    public Post () {
+
+    }
+
     //Constructor
-    public Post(int id, String username, String content, int voteRatio, int totalVotes, LocalDateTime timestamp, Map<String, String> keyPlayers, String sport, int flagCount, String topic, String comments) {
+    public Post(int id, String username, String content, int voteRatio, int totalVotes, LocalDateTime timestamp, Set<String> keyPlayers, String sport, int flagCount, String topic, String comments) {
         this.id = id;
         this.username = username;
         this.content = content;
@@ -89,10 +97,10 @@ public class Post {
     public void setTimeStamp(LocalDateTime timestamp){
         this.timestamp = timestamp;
     }
-    public Map<String, String> getKeyPlayers(){
+    public Set<String> getKeyPlayers(){
         return keyPlayers;
     }
-    public void setKeyPlayers(Map<String, String> keyPlayers) {
+    public void setKeyPlayers(Set<String> keyPlayers) {
         this.keyPlayers = keyPlayers;
     }
     public String getSport(){

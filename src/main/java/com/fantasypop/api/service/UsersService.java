@@ -1,52 +1,48 @@
 package com.fantasypop.api.service;
 
-import com.fantasypop.api.model.User;
-
+import com.fantasypop.api.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 @Service
-public class UserService {
+public class UsersService {
 private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private List<User> users;
+    private List<Users> users;
 
-    public UserService() {
+    public UsersService() {
         // Dummy data initialization (4 users)
         users = new ArrayList<>();
-        users.add(new User(1L, "John", "Doe", "john@example.com", "John123", "john321", "1990-08-15", null, null));
-        users.add(new User(2L, "Jane", "Smith", "jane@example.com", "Jane123", "123jane", "1992-03-24", null, null));
-        users.add(new User(3L, "Bob", "Johnson", "bob@example.com", "Bob123", "bob321", "2001-12-12", null, null));
-        users.add(new User(4L, "Alice", "Green", "alice@example.com", "Alice123",  "alice321", "1984-02-27", null, null));
+        users.add(new Users(1L, "John", "Doe", "john@example.com", "John123", "john321", "1990-08-15", null, null));
+        users.add(new Users(2L, "Jane", "Smith", "jane@example.com", "Jane123", "123jane", "1992-03-24", null, null));
+        users.add(new Users(3L, "Bob", "Johnson", "bob@example.com", "Bob123", "bob321", "2001-12-12", null, null));
+        users.add(new Users(4L, "Alice", "Green", "alice@example.com", "Alice123",  "alice321", "1984-02-27", null, null));
     }
     // LIST METHOD
-    public List<User> getUsers() {
+    public List<Users> getUsers() {
         return users;
     }
     // READ METHODS (id, username, email) *ONLY UNIQUE FIELDS*
-    public User getUserById(Long userId) {
+    public Users getUserById(Long userId) {
         return users.stream()
                 .filter(user -> user.getID().equals(userId))
                 .findFirst()
                 .orElse(null);
     }
 
-    public User getUserByUsername(String username) {
+    public Users getUserByUsername(String username) {
         return users.stream()
                 .filter(user -> user.getUsername().equals(username))
                 .findFirst()
                 .orElse(null);
     }
 
-    public User getUserByEmail(String email) {
+    public Users getUserByEmail(String email) {
         return users.stream()
                 .filter(user -> user.getEmail().equals(email))
                 .findFirst()
@@ -54,17 +50,17 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
     }
 
     /// CREATE METHOD
-    public User registerUser(String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
-        Long newUserId = users.stream().mapToLong(User::getID).max().orElse(0) + 1; // add id to user
-        User newUser = new User(newUserId, firstname, lastname, email, username, password, dob, profilePic, socialMediaLinks );
+    public Users registerUser(String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
+        Long newUserId = users.stream().mapToLong(Users::getID).max().orElse(0) + 1; // add id to user
+        Users newUser = new Users(newUserId, firstname, lastname, email, username, password, dob, profilePic, socialMediaLinks );
         users.add(newUser);
         return newUser;
     }
 
 
     // UPDATE METHOD
-    public User updateUser(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
-        User userToUpdate = getUserById(id);
+    public Users updateUser(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
+        Users userToUpdate = getUserById(id);
         if (userToUpdate != null) {
             userToUpdate.setFirstname(firstname);
             userToUpdate.setLastname(lastname);
@@ -81,7 +77,7 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
 
     /// DELETE METHOD
     public boolean deleteUser(Long id) {
-        User userToDelete = getUserById(id);
+        Users userToDelete = getUserById(id);
         if (userToDelete != null) {
             users.remove(userToDelete);
             return true;
@@ -90,7 +86,7 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
     }
     // PASSWORD HASHING TEMPLATE
     @Autowired
-    private User.UserRepository userRepository;
+    private Users.UsersRepository userRepository;
 
     // Use a strong hashing algorithm like bcrypt
     private static final int HASHING_STRENGTH = 12;
@@ -100,23 +96,27 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
         return passwordEncoder.encode(password);
     }
 
-    public void registerUser(User userDTO) {
+    public void registerUser(Users userDTO) {
         // UserDTO userDTO
         // Additional business logic or validation if needed
 
         // Save the user in the repository
         userRepository.save(userDTO);
-    }
-    public boolean verifyUserLogin(String username, String rawPassword) {
-        User user = userRepository.findByUsername(username);
 
-        if (user == null) {
-            return false; // User not found
+    }
+
+
+        public boolean verifyUserLogin(String username, String rawPassword){
+            Users user = userRepository.findByUsername(username);
+
+            if (user == null) {
+                return false;
+            }
+
+            String storedHashedPassword = user.getPassword();
+            return passwordEncoder.matches(rawPassword, storedHashedPassword);
         }
 
-        String storedHashedPassword = user.getPassword();
-        return passwordEncoder.matches(rawPassword, storedHashedPassword);
-    }
 //    public boolean verifyPassword(User user, String passwordHash) {
 //        String hashedPassword = passwordEncoder.encode(passwordHash, user.getPasswordSalt());
 //        return hashedPassword.equals(user.getPasswordHash());
