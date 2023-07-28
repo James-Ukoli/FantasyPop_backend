@@ -3,13 +3,10 @@ package com.fantasypop.api.controller;
 import com.fantasypop.api.model.Users;
 import com.fantasypop.api.repo.UsersRepository;
 import com.fantasypop.api.service.UsersService;
-import jdk.incubator.vector.VectorOperators;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,7 @@
 package com.fantasypop.api.model;
 
 import jakarta.persistence.*;
-import lombok.Data; // lombok
-import org.springframework.stereotype.Repository;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,15 +9,16 @@ import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
+@Getter
+@Setter
 @Entity
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Data // needed?
 @Table(name = "users") // Warning underlines will be removed once database is correctly connected
 public class Users {
     // Default constructor
-    public Users () {
-
-    }
-
     ///Fields
     @Id
     @Column(name = "id")
@@ -44,82 +44,4 @@ public class Users {
     @Column(name = "social_media")
     @ElementCollection
     private Set<String> socialMediaLinks = new HashSet<>();
-
-
-    //Constructor
-    public Users(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-
-        this.dob = dob;
-        this.profilePic = profilePic;
-        this.socialMediaLinks = socialMediaLinks;
-    }
-
-    //Methods
-    public Long getID() {
-        return id;
-    }
-    public void setID(Long id) {
-        this.id = id;
-    }
-    public String getFirstname() {
-        return firstname;
-    }
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-    public String getLastname() {
-        return lastname;
-    }
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getUsername(){
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    public String getPassword(){
-        return password;
-    }
-
-    public void setPassword(String password){
-        this.password= password;
-    }
-
-    public String getDob(){
-        return dob;
-    }
-    public void setDob(String dob) {
-        this.dob = dob;
-    }
-    public String getProfilePic(){
-        return profilePic;
-    }
-    public void setProfilePic(String profilePic){
-        this.profilePic = profilePic;
-    }
-    public Set<String> getSocialMediaLinks(){
-        return socialMediaLinks;
-    }
-    public void setSocialMediaLinks(Set<String> socialMediaLinks) {
-        this.socialMediaLinks = socialMediaLinks;
-    }
-
-    //PASSWORD TEMPLATE
-
-
-
 }
