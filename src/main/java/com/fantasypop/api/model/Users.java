@@ -44,4 +44,5 @@ public class Users {
     @Column(name = "social_media")
     @ElementCollection
     private Set<String> socialMediaLinks = new HashSet<>();
+
 }

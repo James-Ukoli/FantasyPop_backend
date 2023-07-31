@@ -30,7 +30,7 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
     // READ METHODS (id, username, email) *ONLY UNIQUE FIELDS*
     public Users getUserById(Long userId) {
         return users.stream()
-                .filter(user -> user.getID().equals(userId))
+                .filter(user -> user.getId().equals(userId))
                 .findFirst()
                 .orElse(null);
     }
@@ -51,10 +51,18 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
 
     /// CREATE METHOD
     public Users registerUser(String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
-        Long newUserId = users.stream().mapToLong(Users::getID).max().orElse(0) + 1; // add id to user
+        Long newUserId = users.stream().mapToLong(Users::getId).max().orElse(0) + 1; // add id to user
         Users newUser = new Users(newUserId, firstname, lastname, email, username, password, dob, profilePic, socialMediaLinks );
         users.add(newUser);
         return newUser;
+    }
+
+    public boolean verifyUserLogin(String username, String password){
+    Users user = getUserByUsername(username);
+        if (user != null) {
+            return user.getPassword().equals(password);
+        }
+        return false;
     }
 
 
@@ -84,41 +92,4 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
         }
         return false;
     }
-    // PASSWORD HASHING TEMPLATE
-    @Autowired
-    private Users.UsersRepository userRepository;
-
-    // Use a strong hashing algorithm like bcrypt
-    private static final int HASHING_STRENGTH = 12;
-
-    public String hashPassword(String password) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(HASHING_STRENGTH);
-        return passwordEncoder.encode(password);
-    }
-
-    public void registerUser(Users userDTO) {
-        // UserDTO userDTO
-        // Additional business logic or validation if needed
-
-        // Save the user in the repository
-        userRepository.save(userDTO);
-
-    }
-
-
-        public boolean verifyUserLogin(String username, String rawPassword){
-            Users user = userRepository.findByUsername(username);
-
-            if (user == null) {
-                return false;
-            }
-
-            String storedHashedPassword = user.getPassword();
-            return passwordEncoder.matches(rawPassword, storedHashedPassword);
-        }
-
-//    public boolean verifyPassword(User user, String passwordHash) {
-//        String hashedPassword = passwordEncoder.encode(passwordHash, user.getPasswordSalt());
-//        return hashedPassword.equals(user.getPasswordHash());
-//    }
 }

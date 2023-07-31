@@ -4,12 +4,17 @@ import com.fantasypop.api.model.Users;
 import com.fantasypop.api.repo.UsersRepository;
 import com.fantasypop.api.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping(path = "api/users")
@@ -28,25 +33,28 @@ UsersService usersService;
         return usersService.getUsers();
     }
 
-//    @GetMapping /// read
-//    public Users getUserById(@PathVariable Long id){
-//        Users user = user.stream().filter(u -> u.getID().equals(id)).findFirst().orElse(null);
-//        if (user == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(user);
-//    }
+    @GetMapping ("/{id}")/// read
+    public Users getUserById(@PathVariable Long id){
+        Users user = usersService.getUserById(id);
+        if (user == null) {
+            String notFound = "User Not found";
+            System.out.println(notFound);
+        }
+        return user;
+        //Response entity?
+    }
 
 
-//    public Users getUserByUsername(@RequestParam String username) {
-//        return usersRepository.getUserByUsername(username);
-//    }
+    public Users getUserByUsername(@RequestParam String username) {
+       return usersService.getUserByUsername(username);
+    }
 //
-//    public Users getUserByEmail(@RequestParam String email) {
-//        return usersRepository.getUserByEmail(email);
-//    }
+    public Users getUserByEmail(@RequestParam String email) {
+        return usersService.getUserByEmail(email);
+    }
 
-    // PASSWORD TEMPLATE
+    /// Login (get user by email && encrypted Password??"
+
 
     @PostMapping("/register")
     public void registerUser(@RequestBody Users user) {
@@ -63,27 +71,38 @@ UsersService usersService;
 
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<String> loginUser(@RequestBody Users loginUser) {
-//        boolean loginSuccess = usersService.verifyUserLogin(loginUser);
-//        if (loginSuccess) {
-//            return ResponseEntity.ok("Login successful.");
-//        } else {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
-//        }
+    @PostMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestParam String username, String password) {
+        boolean loginSuccess = usersService.verifyUserLogin(username, password);
+        if (loginSuccess) {
+            return ResponseEntity.ok("Login successful.");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
+        }
+    }
+
+
+@DeleteMapping // DELETE
+public ResponseEntity<String> deleteResource(@PathVariable Long id) {
+    // Your delete logic here
+    // Return an appropriate response
+    return ResponseEntity.ok("Resource with ID " + id + " deleted successfully");
+}
+    // USER TESTING
+
+//   public Users userB = new Users(9L, "Bohn", "Boe", "bohn@example.com", "Bohn123", "Bohn321", "1990-08-15", null, null);
+//
+//    public static void test() {
+////        System.out.println(); // sout
+//        // public static void main // psvm
+//
+//
+//       System.out.println(registerUser(userB));
 //    }
-
-   public Users userB = new Users(1L, "John", "Doe", "john@example.com", "John123", "john321", "1990-08-15", null, null);
-
-    public static void test() {
-//        System.out.println(); // sout
-
-       registerUser(userB);
-    }
-
-    public static void main(String[] args) {
-          test();
-    }
-
- 
+//
+//    public static void main(String[] args) {
+//          test();
+//    }
+//
+//
 }
