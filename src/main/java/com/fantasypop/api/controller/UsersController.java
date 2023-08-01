@@ -9,15 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Provider;
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 
 @RestController
-@RequestMapping(path = "api/users")
+@RequestMapping(path = "/users")
 public class UsersController {
 
 private PasswordEncoder passwordEncoder;
@@ -33,7 +30,7 @@ UsersService usersService;
         return usersService.getUsers();
     }
 
-    @GetMapping ("/{id}")/// read
+    @GetMapping ("/{id}")/// read by Id
     public Users getUserById(@PathVariable Long id){
         Users user = usersService.getUserById(id);
         if (user == null) {
@@ -44,28 +41,29 @@ UsersService usersService;
         //Response entity?
     }
 
-
+@GetMapping("/{username}") // read by Username
     public Users getUserByUsername(@RequestParam String username) {
        return usersService.getUserByUsername(username);
     }
-//
-    public Users getUserByEmail(@RequestParam String email) {
+
+    @GetMapping("/{email}") //read by Email
+  public Users getUserByEmail(@RequestParam String email) {
         return usersService.getUserByEmail(email);
     }
 
     /// Login (get user by email && encrypted Password??"
 
 
-    @PostMapping("/register")
+    @PostMapping("/register") // create
     public void registerUser(@RequestBody Users user) {
-        // Hash the password using BCrypt before storing it
-        // password
+
+        // password - encrypt the password  before storing it
         this.passwordEncoder = new BCryptPasswordEncoder();
         String plainText = user.getPassword();
         String encryptedPassword = this.passwordEncoder.encode(plainText);
         System.out.println(encryptedPassword);
         user.setPassword(encryptedPassword);
-        // Save the user in the data store
+        /// End of Bcrypt checkpoint
 
         usersRepository.save(user);
 
@@ -81,8 +79,46 @@ UsersService usersService;
         }
     }
 
+    @PutMapping("/{id}") // update
+    public ResponseEntity<Users> updateUser(@PathVariable Long id, @RequestBody Users updatedUser){
+        Users user = usersService.getUserById(id);
+        if (user != null) {
+            // Assuming you have appropriate setters in the Users class for updating individual fields
+            if (updatedUser.getUsername() != null) {
+                user.setUsername(updatedUser.getUsername());
+            }
+            if (updatedUser.getEmail() != null) {
+                user.setEmail(updatedUser.getEmail());
+            }
+            if (updatedUser.getFirstname() != null) {
+                user.setFirstname(updatedUser.getFirstname());
+            }
+            if (updatedUser.getLastname() != null) {
+                user.setLastname(updatedUser.getLastname());
+            }
+            if (updatedUser.getDob() != null) {
+                user.setDob(updatedUser.getDob());
+            }
+            if (updatedUser.getProfilePic() != null) {
+                user.setProfilePic(updatedUser.getProfilePic());
+            }
+            if (updatedUser.getLastname() != null) {
+                user.setLastname(updatedUser.getLastname());
+            }
+            if (updatedUser.getSocialMediaLinks() != null) {
+                user.setSocialMediaLinks(updatedUser.getSocialMediaLinks());
+            }
+            // ... and so on for other fields you want to update
 
-@DeleteMapping // DELETE
+            usersService.updateUser(user);
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+@DeleteMapping // delete
 public ResponseEntity<String> deleteResource(@PathVariable Long id) {
     // Your delete logic here
     // Return an appropriate response

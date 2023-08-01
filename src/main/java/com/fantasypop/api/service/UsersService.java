@@ -1,6 +1,7 @@
 package com.fantasypop.api.service;
 
 import com.fantasypop.api.model.Users;
+import com.fantasypop.api.repo.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class UsersService {
 private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private List<Users> users;
+
+    private UsersRepository usersRepository;
 
     public UsersService() {
         // Dummy data initialization (4 users)
@@ -65,22 +68,10 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
         return false;
     }
 
-
     // UPDATE METHOD
-    public Users updateUser(Long id, String firstname, String lastname, String email, String username, String password, String dob, String profilePic, Set<String> socialMediaLinks) {
-        Users userToUpdate = getUserById(id);
-        if (userToUpdate != null) {
-            userToUpdate.setFirstname(firstname);
-            userToUpdate.setLastname(lastname);
-            userToUpdate.setEmail(email);
-            userToUpdate.setUsername(username);
-            userToUpdate.setPassword(password);
-            userToUpdate.setDob(dob);
-            userToUpdate.setProfilePic(profilePic);
-            userToUpdate.setSocialMediaLinks(socialMediaLinks);
-            return userToUpdate;
-        }
-        return null;
+    public Users updateUser(Users updatedUser) {
+        // Assuming the UsersRepository has the save() method to persist the updated user
+        return usersRepository.save(updatedUser);
     }
 
     /// DELETE METHOD
