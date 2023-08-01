@@ -1,13 +1,9 @@
 package com.fantasypop.api.model;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
-
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 @Getter
@@ -26,12 +22,12 @@ public class Post {
     private int id;
     @Column(nullable = false, unique = true, name = "username")
     private String username; // can be anonymous
-
-    @Column(nullable = false, name = "content")
+    @NotBlank
+    @Column(nullable = false, name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "vote_ratio") // Positive to Negative Ratio for post
-    private int voteRatio;
+    @Column(name = "vote_sum_ratio") // Positive to Negative Ratio for post
+    private int voteSumRatio;
     @Column(name ="total_votes")
     private int totalVotes;
     @Column(nullable = false, name = "timestamp")
