@@ -1,6 +1,7 @@
 package com.fantasypop.api.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.HashSet;
@@ -24,14 +25,19 @@ public class Users {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Please enter your firstname")
     @Column (nullable = false, name="first_name") // 2
     private String firstname;
+    @NotBlank(message = "Please enter your lastname")
     @Column (nullable = false, name="last_name") // 3
     private String lastname;
+    @NotBlank(message = "Please enter your email")
 @Column (nullable = false, name="email", unique = true) // 4
     private String email;
+    @NotBlank(message = "Please enter your username:")
 @Column (nullable = false, name = "username", unique = true) // 5
     private String username;
+    @NotBlank(message = "Please enter your email:")
 @Column(nullable = false, name="password") // 6
     private String password;
 

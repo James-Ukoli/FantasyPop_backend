@@ -3,12 +3,17 @@ package com.fantasypop.api.controller;
 import com.fantasypop.api.model.Users;
 import com.fantasypop.api.repo.UsersRepository;
 import com.fantasypop.api.service.UsersService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -55,8 +60,16 @@ UsersService usersService;
 
 
     @PostMapping("/register") // create
-    public void registerUser(@RequestBody Users user) {
-
+    public ResponseEntity<String> registerUser(@Valid @RequestBody Users user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            // If validation errors exist, return a bad request response with error messages
+            List<ObjectError> errors = bindingResult.getAllErrors();
+            List<String> errorMessages = new ArrayList<>();
+            for (ObjectError error : errors) {
+                errorMessages.add(error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errorMessages.toString());
+        }
         // password - encrypt the password  before storing it
         this.passwordEncoder = new BCryptPasswordEncoder();
         String plainText = user.getPassword();
@@ -66,7 +79,8 @@ UsersService usersService;
         /// End of Bcrypt checkpoint
 
         usersRepository.save(user);
-
+        return ResponseEntity.ok().body("User register successfully!");
+//        usersService.registerUser(String firstname, );
     }
 
     @PostMapping("/login")
@@ -121,10 +135,12 @@ UsersService usersService;
 @DeleteMapping // delete
 public ResponseEntity<String> deleteResource(@PathVariable Long id) {
     // Your delete logic here
+    usersService.deleteUser(id);
     // Return an appropriate response
-    return ResponseEntity.ok("Resource with ID " + id + " deleted successfully");
+    return ResponseEntity.ok("Resource with ID " + id + " has been deleted successfully");
 }
-    // USER TESTING
+
+// USER TESTING
 
 //   public Users userB = new Users(9L, "Bohn", "Boe", "bohn@example.com", "Bohn123", "Bohn321", "1990-08-15", null, null);
 //
