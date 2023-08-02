@@ -2,7 +2,6 @@ package com.fantasypop.api.service;
 
 import com.fantasypop.api.model.Users;
 import com.fantasypop.api.repo.UsersRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.ArrayList;

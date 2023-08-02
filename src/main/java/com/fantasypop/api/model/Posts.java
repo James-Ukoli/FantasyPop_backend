@@ -14,7 +14,7 @@ import java.util.Map;
 @Entity
 @Data // needed?
 @Table(name = "posts")
-public class Post {
+public class Posts {
     //Fields
     @Id
     @Column(name = "id")

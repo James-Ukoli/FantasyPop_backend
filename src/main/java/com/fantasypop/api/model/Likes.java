@@ -13,5 +13,5 @@ import org.apache.catalina.User;
 public class Likes {
     private Long id;
     private User user; // the user that liked the Post
-    private Post likedPost; // The post that was liked
+    private Posts likedPost; // The post that was liked
 }

@@ -19,5 +19,5 @@ public class FlagCount {
 
     @ManyToOne
     @JoinColumn(name = "post_id", referencedColumnName = "id")
-    private Post post;
+    private Posts post;
 }

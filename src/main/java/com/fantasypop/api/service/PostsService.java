@@ -1,4 +1,4 @@
 package com.fantasypop.api.service;
 
-public class PostService {
+public class PostsService {
 }
