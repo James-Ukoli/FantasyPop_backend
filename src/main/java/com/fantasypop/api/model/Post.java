@@ -19,15 +19,15 @@ public class Post {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(nullable = false, unique = true, name = "username")
-    private String username; // can be anonymous
+    private Long id;
+    @Column(nullable = false, unique = true, name = "userId")
+    private int userId; // can be anonymous
     @NotBlank
     @Column(nullable = false, name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "vote_sum_ratio") // Positive to Negative Ratio for post
-    private int voteSumRatio;
+    @Column(name = "vote_difference") // Positive to Negative Ratio for post
+    private int voteDifference;
     @Column(name ="total_votes")
     private int totalVotes;
     @Column(nullable = false, name = "timestamp")
@@ -40,11 +40,7 @@ public class Post {
     @Column(nullable = false, name="sport")
     private String sport;
 
-    @Column(name="flag_count")
-    private int flagCount;
     @Column(nullable = false, name="topic")
     private String topic;
-
-    @Column(nullable = false, name = "comments")
-    private String comments;
+    /// 8-1-23 Comments, FlagCount, has been converted to a Class
 }
