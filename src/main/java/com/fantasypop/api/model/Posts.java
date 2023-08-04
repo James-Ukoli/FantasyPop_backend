@@ -25,18 +25,15 @@ public class Posts {
     @NotBlank
     @Column(nullable = false, name = "content", columnDefinition = "TEXT")
     private String content;
-
     @Column(name = "vote_difference") // Positive to Negative Ratio for post
     private int voteDifference;
     @Column(name ="total_votes")
     private int totalVotes;
     @Column(nullable = false, name = "timestamp")
     private LocalDateTime timestamp;
-
     @ElementCollection
     @Column(name="key_players")
     private Map<String, String> keyPlayers;
-
     @Column(nullable = false, name="sport")
     private String sport;
 

@@ -68,18 +68,16 @@ private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(
     }
 
     // UPDATE METHOD
-    public Users updateUser(Users updatedUser) {
+    public void updateUser(Users updatedUser) {
         // Assuming the UsersRepository has the save() method to persist the updated user
-        return usersRepository.save(updatedUser);
+        usersRepository.save(updatedUser);
     }
 
     /// DELETE METHOD
-    public boolean deleteUser(Long id) {
+    public void deleteUser(Long id) {
         Users userToDelete = getUserById(id);
         if (userToDelete != null) {
             users.remove(userToDelete);
-            return true;
         }
-        return false;
     }
 }
