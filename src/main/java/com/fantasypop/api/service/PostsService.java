@@ -31,7 +31,7 @@ public class PostsService {
         return null;
     }
 
-    /// List all posts by Sport, by Topic, and by Recent timestamp (Sport and Topic filter and recently Order timestamp Order)
+    /// List all posts by Sport, by Topic, and by Recent timestamp (Sport and Topic filter and recently git Order timestamp Order)
     public Posts getPostsBySportAndTopicAndRecentTimeStamp(String sport, String topic, LocalDateTime timestamp){
         System.out.println("This is on the news feed page");
         return null;
