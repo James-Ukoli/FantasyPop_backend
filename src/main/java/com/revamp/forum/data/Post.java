@@ -11,6 +11,7 @@ import javax.persistence.*;
 @ToString
 @Entity
 @Table(name="posts")
+// Pops
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
