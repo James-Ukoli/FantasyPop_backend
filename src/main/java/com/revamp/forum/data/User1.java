@@ -21,7 +21,7 @@ public class User1 {
     private long id;
     // SIGNUP DATA POINT 1
     @Column(nullable = false, unique = true, length = 100)
-    private String userName;
+    private String username;
     // SIGNUP DATA POINT 2
     @Column(nullable=false, length= 256)
     @Transient
