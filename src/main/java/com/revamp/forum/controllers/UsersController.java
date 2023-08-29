@@ -9,10 +9,16 @@ import com.revamp.forum.repositories.UsersRepository;
 import com.revamp.forum.services.AuthBuddy;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.rest.webmvc.ControllerUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -97,5 +103,24 @@ import java.util.Optional;
             BeanUtils.copyProperties(updatedUser, originalUser, FieldHelper.getNullPropertyNames(updatedUser));
             originalUser.setId(id);
             usersRepository.save(originalUser);
+        }
+        @RequestMapping(method = RequestMethod.POST, value = "/profile-image/upload")
+        public ResponseEntity<?> uploadFile(
+                @RequestParam("file") MultipartFile uploadfile, HttpServletRequest request) {
+            if (uploadfile.isEmpty()) {
+                return new ResponseEntity("please select a file!", HttpStatus.OK);
+            }
+            String path = "";
+            try {
+//                Long currentMemberId = ControllerUtils.getUserId(request);
+//                path = saveUploadedFile(uploadfile,currentMemberId);
+                System.out.println("HElo");
+            } catch (Exception e) {
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+
+
+
+            return new ResponseEntity(path, new HttpHeaders(), HttpStatus.OK);
         }
     }
